@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Planet_Express_Logs</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" />
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+
+    var data = google.visualization.arrayToDataTable([
+      ['Pilot', 'Profit'],
+      <% grouped_by_pilot.each do |pilot, trips| %>
+      ['<%= pilot %>' , <%= trips.reduce(0) {|key, value| key + value.money} %>],
+      <% end %>
+    ]);
+
+    var options = {
+      title: 'Pilots by the numbers...'
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+    chart.draw(data, options);
+  }
+  </script>
+</head>
+
+
+<body>
+  <h1 class = "heading">Planet Express weekly profit: <%= total %></h1>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div id="piechart" style="width: 900px; height: 500px;"></div>
+      </div>
+      <div class="col-md-4">
+        <table class="table">
+          <tr>
+            <th>
+              <p>Pilots</p>
+            </th>
+
+            <th>
+              <p># of Trips</p>
+            </th>
+
+            <th>
+              <p>Bonus</p>
+            </th>
+
+          </tr>
+
+          <% grouped_by_pilot.each do |pilot, trips| %>
+          <tr>
+            <td>
+              <%= pilot %>
+            </td>
+
+            <td>
+              <%= trips.length %>
+            </td>
+
+            <td>
+              <%= trips.reduce(0) {|sum, value| sum + value.money}/10.0 %>
+            </td>
+          </tr>
+          <%end%>
+        </table>
+      </div>
+    </div>
+
+
+    <div class="col-md-8">
+      <table class = "table">
+        <tr>
+          <th>
+            <p>Destination</p>
+          </th>
+
+          <th>
+            <p>Shipments</p>
+          </th>
+
+          <th>
+            <p>Crates</p>
+          </th>
+
+          <th>
+            <p>Money</p>
+          </th>
+
+        </tr>
+
+        <% log.each do |key| %>
+        <tr>
+          <td>
+            <%= key.destination %>
+          </td>
+
+          <td>
+            <%= key.shipment %>
+          </td>
+
+          <td>
+            <%= key.crates %>
+          </td>
+
+          <td>
+            <%= key.money %>
+          </td>
+
+        </tr>
+        <%end%>
+      </table>
+    </div>
+
+    <div class="col-md-3">
+      <img src= "http://i.giphy.com/FfD3U99PBWxj2.gif" alt="gif">
+    </div>
+  </div>
+
+</body>
+</html>
